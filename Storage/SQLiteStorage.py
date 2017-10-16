@@ -1,4 +1,6 @@
 
+import os
+import shutil
 import sqlite3
 import datetime
 
@@ -10,12 +12,11 @@ class SQLiteStorage(object):
     Use dbName to load a existing db
     '''
     def __init__(self, dbName=""):
+        self.filename = dbName
         if dbName == "":
-            filename = datetime.datetime.now().strftime("session_%y-%m-%d_%H-%M-%S.db")
-        else:
-            filename = dbName
+            self.filename = datetime.datetime.now().strftime("session_%y-%m-%d_%H-%M-%S.db")
 
-        self.conn = sqlite3.connect(filename)
+        self.conn = sqlite3.connect(self.filename)
         self.cursor = self.conn.cursor()
 
         #init the database with all the needed tables if the file has been created
@@ -33,6 +34,11 @@ class SQLiteStorage(object):
     def __del__(self):
         self.conn.commit()
         self.conn.close()
+        try:
+            os.mkdir('done')
+        except:
+            pass #do nothing... dir probably already exists
+        shutil.move(self.filename, 'done/' + self.filename)
 
     '''
     Stores the current ErgStats data
