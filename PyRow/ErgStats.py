@@ -37,10 +37,6 @@ class ErgStats(object):
 
     @staticmethod
     def isWorkoutActive():
-        #if there is no erg we can skip all the workout init stuff...
-        if not ErgStats.isConnected:
-            return True
-
         # Loop until workout has begun
         workout = ErgStats.erg.get_workout()
         if workout['state'] == 0:
